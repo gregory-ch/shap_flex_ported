@@ -1,0 +1,13 @@
+LICENSE
+MANIFEST.in
+README.md
+requirements.txt
+setup.cfg
+setup.py
+shapflex/__init__.py
+shapflex/shapflex.py
+shapflex.egg-info/PKG-INFO
+shapflex.egg-info/SOURCES.txt
+shapflex.egg-info/dependency_links.txt
+shapflex.egg-info/not-zip-safe
+shapflex.egg-info/top_level.txt
