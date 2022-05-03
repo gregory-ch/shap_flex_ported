@@ -18,7 +18,7 @@ This is the alpfa version of porting https://github.com/nredell/shapFlex
  
 ## Examples
 
-***
+```
 #02.05.22
 
 
@@ -63,7 +63,7 @@ data_out = data_merge.merge(data_predicted, how='right', on=['index_in_sample', 
 #result = exmpl_of_test.forward()
 #print(result.shape)
 
-*** 
+```
 
 
 ## Credits
