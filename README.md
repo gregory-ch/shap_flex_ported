@@ -14,7 +14,7 @@
  
 ## Warnings 
 
-This is the alpfa version of porting https://github.com/nredell/shapFlex
+This is the alpha version of porting https://github.com/nredell/shapFlex
  
 ## Examples
 
