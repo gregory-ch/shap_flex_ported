@@ -1,0 +1,31 @@
+pip
+bump2version
+wheel
+watchdog
+flake8
+tox
+coverage
+Sphinx
+twine
+grip
+catboost==1.0.5
+cycler==0.11.0
+fonttools==4.33.3
+graphviz==0.20
+igraph==0.9.10
+kiwisolver==1.4.2
+matplotlib==3.5.1
+numpy==1.22.3
+packaging==21.3
+pandas==1.4.2
+Pillow==9.1.0
+pip==22.0.4
+plotly==5.7.0
+pyparsing==3.0.8
+python-dateutil==2.8.2
+pytz==2022.1
+scipy==1.8.0
+setuptools==60.10.0
+six ==1.16.0
+tenacity== 8.0.1
+texttable== 1.6.4
