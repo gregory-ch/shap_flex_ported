@@ -3,8 +3,7 @@
 import numpy as np
 import pandas as pd
 import igraph
-import itertools
-from catboost import CatBoostClassifier
+
 
 class shapFlex_plus:
     def __init__(self, explain,  model, predict_function, reference = None, target_features = None, \
@@ -29,17 +28,6 @@ class shapFlex_plus:
         self.causal_nodes = [v for v in self.each_node_causes.keys()] if isinstance(self.causal, pd.core.frame.DataFrame) else [None]
         self.effect_nodes = [v for v in self.each_node_is_an_effect_from.keys()] if isinstance(self.causal, pd.core.frame.DataFrame) else [None]
         self.nodes = [v['name'] for v in self.nodes] if isinstance(self.causal, pd.core.frame.DataFrame) else [None]
-
-    @staticmethod
-    def unlist_df(data):
-      unlisted_df = pd.Series(
-                  data,
-                  index=[
-                  index_col + index_row for index_col, index_row in itertools.product(
-                      [str(x) for x in range(data.shape[0])], 
-                      [str(x) for x in data.columns])]
-              )
-      return unlisted_df
       
     def loop_over_monte_carlo_samples(self):
       i_size = self.sample_size
@@ -243,9 +231,9 @@ class shapFlex_plus:
       '''есть self.reference, self.model, self.predict_function, self.n_features, self.causal, self.causal_weights'''
       data_model = data_predict.iloc[:, :self.n_features].copy()
       data_meta = data_predict.iloc[:, self.n_features:].copy()
-      data_predicted = pd.DataFrame(predict_function(self.model, data_model), index=data_model.index)
+      data_predicted = pd.DataFrame(self.predict_function(self.model, data_model), index=data_model.index)
       data_predicted = pd.concat([data_meta, data_predicted], axis=1)
-      intercept = predict_function(self.model, self.reference).mean(skipna=True)
+      intercept = self.predict_function(self.model, self.reference).mean(skipna=True)
       user_fun_y_pred_name = data_predicted.columns[-1]
       variables_of_interest = list(set(data_predicted.columns) - set(['feature_group', user_fun_y_pred_name]))
       data_predicted.loc[:, variables_of_interest] =\
