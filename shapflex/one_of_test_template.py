@@ -1,5 +1,5 @@
 from shapflex import shapFlex_plus
-from catboost import CatBoostClassifier 
+from catboost import CatBoostRegressor 
 
 import pandas as pd
 import numpy as np
@@ -47,30 +47,34 @@ df_i_signupmonth = (
     )
     .reset_index()
 )
-print(df_i_signupmonth)
+
 
 outcome_name = 'post_spends'
 data = df_i_signupmonth
 outcome_col = pd.Series(data.columns)[data.columns==outcome_name].index[0]
 X, y = data.drop(outcome_name, axis=1), data[outcome_name].values
 cat_features = [inx for inx, value in zip(X.dtypes.index, X.dtypes) if value =='object']
-model = CatBoostClassifier(iterations=5)
+model = CatBoostRegressor(iterations=1000)
 model.fit(X, y, cat_features=cat_features, verbose=False)
 def predict_function(model, data):
   #pd.DataFrame(model.predict_proba(X)).loc[:, 0][9] если запустить будет результат 0.98, что соответствует
   #выводу для 9 номера который равен 0.98, неважно какой алгоритм, такая высокая степень уверенности
   #позволяет идентифицировать выводимую колонку однозначно
-  return pd.DataFrame(model.predict_proba(data)[:, [0]])
+  return pd.DataFrame(model.predict(data))
 
 
 
-explain, reference = data.iloc[:10, :data.shape[1]-1], data.iloc[:, :data.shape[1]-1]
-sample_size = 5
+explain, reference = data.iloc[:300, :data.shape[1]-1], data.iloc[:, :data.shape[1]-1]
+sample_size = 300
 target_features = pd.Series(["treatment",'pre_spends',  'signup_month'])
 causal = pd.DataFrame(
-    {'cause': ['pre_spends',  'signup_month',  ], 'effect': [ 
-    'treatment', 'treatment']}
+    {'cause': ['pre_spends',  'signup_month', 'treatment',  'signup_month'], 'effect': [ 
+    'treatment', 'treatment','post_spends','post_spends']}
 )
 
 exmpl_of_test = shapFlex_plus(explain,  model, predict_function, target_features=target_features, causal=causal, causal_weights = [1. for x in range(len(causal))])
 yes_cause = exmpl_of_test.forward()
+print(yes_cause.groupby('feature_name').mean())
+exmpl_of_test_no_c = shapFlex_plus(explain,  model, predict_function, target_features=target_features)
+no_causes = exmpl_of_test_no_c.forward()
+print(no_causes.groupby('feature_name').mean())
