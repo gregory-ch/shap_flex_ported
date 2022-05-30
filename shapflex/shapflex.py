@@ -247,7 +247,10 @@ class shapFlex_plus:
       ).reset_index()
       
       data_non_causal = data_predicted.loc[data_predicted['causal']==0]
-      data_non_causal['shap_effect'] = data_non_causal['real_target'] - data_non_causal['fake_target']
+      if len(data_non_causal)<1:
+        data_non_causal['shap_effect'] = ""
+      else:
+        data_non_causal['shap_effect'] = data_non_causal['real_target'] - data_non_causal['fake_target']
       data_causal = data_predicted.loc[data_predicted['causal']==1]
 
       if isinstance(self.causal, pd.core.frame.DataFrame):
