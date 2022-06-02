@@ -15,8 +15,14 @@
 ## Warnings 
 
 This is the alpha version of porting https://github.com/nredell/shapFlex
+
+## Example with discovery on real data
  
-## Examples
+ https://github.com/gregory-ch/shap_flex_porting/blob/main/shap_joint.ipynb
+ 
+## reproducing original example
+
+
 
 ```
 #02.05.22
@@ -24,6 +30,9 @@ This is the alpha version of porting https://github.com/nredell/shapFlex
 
 import pandas as pd
 import numpy as np
+from shapflex.shapflex import shapFlex_plus
+from catboost import CatBoostClassifier 
+
 data = pd.read_csv('https://kolodezev.ru/download/data_adult.csv', index_col=0)
 outcome_name = 'income'
 outcome_col = pd.Series(data.columns)[data.columns==outcome_name].index[0]
@@ -50,18 +59,9 @@ causal = pd.DataFrame(
 )
 exmpl_of_test = shapFlex_plus(explain,  model, predict_function, target_features=pd.Series(["marital_status", "education", "relationship", "native_country",
 "age", "sex", "race", "hours_per_week"]), causal=causal, causal_weights = [1. for x in range(len(causal))])
-data_predict = exmpl_of_test.loop_over_monte_carlo_samples()
-'''data_predict = pd.read_csv('r_data_predict.csv', index_col=0)
-data_predict = data_predict.rename(columns={'index':'index_in_sample'})'''
-print(data_predict.shape)
-data_predicted = exmpl_of_test.predict_shapFlex(data_predict)
-print(data_predicted.shape)
-data_merge = pd.melt(explain)
-data_merge.columns = ["feature_name", "feature_value"]
-data_merge['index_in_sample'] = np.tile(np.arange(explain.shape[0]), exmpl_of_test.n_features)
-data_out = data_merge.merge(data_predicted, how='right', on=['index_in_sample', 'feature_name'])
-#result = exmpl_of_test.forward()
-#print(result.shape)
+result = exmpl_of_test.forward()
+print(result.groupby('feature_name').mean())
+
 
 ```
 
