@@ -41,9 +41,6 @@ cat_features = [inx for inx, value in zip(X.dtypes.index, X.dtypes) if value =='
 model = CatBoostClassifier(iterations=100)
 model.fit(X, y, cat_features=cat_features, verbose=False)
 def predict_function(model, data):
-  #pd.DataFrame(model.predict_proba(X)).loc[:, 0][9] если запустить будет результат 0.98, что соответствует
-  #выводу для 9 номера который равен 0.98, неважно какой алгоритм, такая высокая степень уверенности
-  #позволяет идентифицировать выводимую колонку однозначно
   return pd.DataFrame(model.predict_proba(data)[:, [0]])
 
 
